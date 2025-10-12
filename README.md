@@ -2,4 +2,4 @@
 Life happens, got rusty, picking rust back up again.
 
 
-`cargo new your_next_project --vcs none`
+run `cargo new your_next_project --vcs none` for new projects. 
