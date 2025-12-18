@@ -3,5 +3,5 @@ We can build a project using `cargo build`.
 We can build and run a project in one step using `cargo run`.
 We can build a project without producing a binary to check for errors using `cargo check`.
 Instead of saving the result of the build in the same directory as our code, Cargo stores it in the `target/debug` directory.
-An additional advantage of using Cargo is that the commands are the same no matter which operating system you’re working on. So, at this point, we’ll no longer need specific instructions for Linux and macOS versus Windows.
-When your project is finally ready for release, you can use `cargo build --release` to compile it with optimizations. This command will create an executable in target/release instead of target/debug.
+An additional advantage of using Cargo is that the commands are the same no matter which operating system you’re working on.
+When your project is finally ready for release, you can use `cargo build --release` to compile it with optimizations. This command will create an executable in `target/release` instead of `target/debug`.
