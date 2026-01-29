@@ -40,3 +40,14 @@ Code within a module is private from its parent modules by default. To make a mo
  
  The `use` keyword creates shortcuts to items to reduce repetition of long paths within a scope.
  > In any scope that can refer to `crate::garden::vegetables::Asparagus`, you can create a shortcut with `use crate::garden::vegetables::Asparagus;`, and then you only need write `Asparagus` to use the type in the scope.
+
+### More
+
+Modules let us organize code within a crate for readability and easy reuse. Code within a module is private by default 
+To Create a new library run `cargo new library_name --lib`
+
+The entire module tree is rooted under a implicit module named `crate`.
+
+
+## Paths
+> continue from [here](https://doc.rust-lang.org/stable/book/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html)
