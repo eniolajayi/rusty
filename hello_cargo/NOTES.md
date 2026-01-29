@@ -5,3 +5,4 @@ We can build a project without producing a binary to check for errors using `car
 Instead of saving the result of the build in the same directory as our code, Cargo stores it in the `target/debug` directory.
 An additional advantage of using Cargo is that the commands are the same no matter which operating system you’re working on.
 When your project is finally ready for release, you can use `cargo build --release` to compile it with optimizations. This command will create an executable in `target/release` instead of `target/debug`.
+To create a new library run `cargo new library_name --lib`
