@@ -1,19 +1,25 @@
 use iced::Element;
-use iced::widget::text;
+use iced::widget::{container, text_editor};
 
 fn main() -> iced::Result {
     iced::run(Editor::update, Editor::view)
 }
 
 #[derive(Default)]
-struct Editor;
+struct Editor {
+    content: text_editor::Content,
+}
 
 #[derive(Debug, Clone)]
-enum Message {}
+enum Message {
+    Edit(text_editor::Action),
+}
 
 impl Editor {
     fn new() -> Self {
-        Self
+        Self {
+            content: text_editor::Content::new(),
+        }
     }
 
     fn title(&self) -> String {
@@ -21,10 +27,15 @@ impl Editor {
     }
 
     fn update(&mut self, message: Message) {
-        match message {}
+        match message {
+            Message::Edit(action) => {
+                self.content.perform(action);
+            }
+        }
     }
 
     fn view(&self) -> Element<'_, Message> {
-        text("Hello, iced!").into()
+        let input = text_editor(&self.content).on_action(Message::Edit);
+        container(input).padding(10).into()
     }
 }
