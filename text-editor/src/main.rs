@@ -28,7 +28,7 @@ impl Editor {
     }
 
     fn title(&self) -> String {
-        String::from("Text Editor")
+        String::from("Heny's Text Editor")
     }
 
     fn update(&mut self, message: Message) {
