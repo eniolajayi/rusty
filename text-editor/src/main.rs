@@ -1,8 +1,13 @@
-use iced::Element;
-use iced::widget::{container, text_editor};
+use iced::widget::{column, container, text, text_editor};
+use iced::{Element, Theme};
 
 fn main() -> iced::Result {
-    iced::run(Editor::update, Editor::view)
+    // iced::run(Editor::update, Editor::view)
+    iced::application(Editor::new, Editor::update, Editor::view)
+        .theme(Editor::theme)
+        .title(Editor::title)
+        .window_size((800, 500))
+        .run()
 }
 
 #[derive(Default)]
