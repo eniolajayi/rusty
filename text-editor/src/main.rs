@@ -40,7 +40,24 @@ impl Editor {
     }
 
     fn view(&self) -> Element<'_, Message> {
-        let input = text_editor(&self.content).on_action(Message::Edit);
-        container(input).padding(10).into()
+        let input = text_editor(&self.content)
+            .on_action(Message::Edit)
+            .wrapping(text::Wrapping::Word)
+            .max_height(450)
+            .min_height(450);
+        let cursor = self.content.cursor();
+
+        let position = {
+            let cursor_line = cursor.position.line;
+            let cursor_column = cursor.position.column;
+
+            text(format!("{}:{}", cursor_line + 1, cursor_column + 1))
+        };
+
+        container(column![input, position]).padding(10).into()
+    }
+
+    fn theme(&self) -> Theme {
+        Theme::Dark
     }
 }
