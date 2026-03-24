@@ -23,7 +23,7 @@ enum Message {
 impl Editor {
     fn new() -> Self {
         Self {
-            content: text_editor::Content::new(),
+            content: text_editor::Content::with_text(include_str!("main.rs")),
         }
     }
 
