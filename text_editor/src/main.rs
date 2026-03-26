@@ -16,6 +16,7 @@ fn main() -> iced::Result {
 #[derive(Default)]
 struct Editor {
     content: text_editor::Content,
+    error: Option<io::ErrorKind>,
 }
 
 #[derive(Debug, Clone)]
@@ -29,6 +30,7 @@ impl Editor {
         (
             Self {
                 content: text_editor::Content::new(),
+                error: None,
             },
             Task::perform(
                 load_file(format!("{}/src/main.rs", env!("CARGO_MANIFEST_DIR"))),
@@ -46,10 +48,11 @@ impl Editor {
             Message::Edit(action) => {
                 self.content.perform(action);
             }
-            Message::FileOpened(result) => {
-                if let Ok(content) = result {
-                    self.content = text_editor::Content::with_text(&content);
-                }
+            Message::FileOpened(Ok(content)) => {
+                self.content = text_editor::Content::with_text(&content);
+            }
+            Message::FileOpened(Err(error)) => {
+                self.error = Some(error);
             }
         }
     }
