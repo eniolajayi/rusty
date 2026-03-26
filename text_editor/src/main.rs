@@ -28,7 +28,7 @@ impl Editor {
     fn boot() -> (Self, Task<Message>) {
         (
             Self {
-                content: text_editor::Content::with_text(include_str!("main.rs")),
+                content: text_editor::Content::new(),
             },
             Task::perform(
                 load_file(format!("{}/src/main.rs", env!("CARGO_MANIFEST_DIR"))),
