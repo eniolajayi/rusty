@@ -1,5 +1,5 @@
-use iced::widget::{column, container, text, text_editor};
-use iced::{Element, Theme};
+use iced::widget::{column, container, row, space, text, text_editor};
+use iced::{Element, Length, Theme};
 
 fn main() -> iced::Result {
     // iced::run(Editor::update, Editor::view)
@@ -54,7 +54,11 @@ impl Editor {
             text(format!("{}:{}", cursor_line + 1, cursor_column + 1))
         };
 
-        container(column![input, position]).padding(10).into()
+        let status_bar = row![space().width(Length::Fill), position];
+
+        container(column![input, status_bar].spacing(10))
+            .padding(10)
+            .into()
     }
 
     fn theme(&self) -> Theme {
