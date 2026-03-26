@@ -1,4 +1,4 @@
-use iced::widget::{column, container, row, space, text, text_editor};
+use iced::widget::{button, column, container, row, space, text, text_editor};
 use iced::{Element, Length, Task, Theme};
 use std::io;
 use std::path::Path;
@@ -16,13 +16,14 @@ fn main() -> iced::Result {
 #[derive(Default)]
 struct Editor {
     content: text_editor::Content,
-    error: Option<io::ErrorKind>,
+    error: Option<Error>,
 }
 
 #[derive(Debug, Clone)]
 enum Message {
     Edit(text_editor::Action),
-    FileOpened(Result<Arc<String>, io::ErrorKind>),
+    Open,
+    FileOpened(Result<Arc<String>, Error>),
 }
 
 impl Editor {
@@ -43,21 +44,27 @@ impl Editor {
         String::from("Heny's Text Editor")
     }
 
-    fn update(&mut self, message: Message) {
+    fn update(&mut self, message: Message) -> Task<Message> {
         match message {
             Message::Edit(action) => {
                 self.content.perform(action);
+                Task::none()
             }
+            Message::Open => Task::perform(pick_file(), Message::FileOpened),
             Message::FileOpened(Ok(content)) => {
                 self.content = text_editor::Content::with_text(&content);
+                Task::none()
             }
             Message::FileOpened(Err(error)) => {
                 self.error = Some(error);
+                Task::none()
             }
         }
     }
 
     fn view(&self) -> Element<'_, Message> {
+        let controls = row![button("Open").on_press(Message::Open)];
+
         let input = text_editor(&self.content)
             .on_action(Message::Edit)
             .wrapping(text::Wrapping::Word)
@@ -74,7 +81,7 @@ impl Editor {
 
         let status_bar = row![space().width(Length::Fill), position];
 
-        container(column![input, status_bar].spacing(10))
+        container(column![controls, input, status_bar].spacing(10))
             .padding(10)
             .into()
     }
