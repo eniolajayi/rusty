@@ -1,9 +1,12 @@
 use iced::widget::{column, container, row, space, text, text_editor};
-use iced::{Element, Length, Theme};
+use iced::{Element, Length, Task, Theme};
+use std::io;
+use std::path::Path;
+use std::sync::Arc;
 
 fn main() -> iced::Result {
     // iced::run(Editor::update, Editor::view)
-    iced::application(Editor::new, Editor::update, Editor::view)
+    iced::application(Editor::boot, Editor::update, Editor::view)
         .theme(Editor::theme)
         .title(Editor::title)
         .window_size((800, 500))
@@ -18,13 +21,20 @@ struct Editor {
 #[derive(Debug, Clone)]
 enum Message {
     Edit(text_editor::Action),
+    FileOpened(Result<Arc<String>, io::ErrorKind>),
 }
 
 impl Editor {
-    fn new() -> Self {
-        Self {
-            content: text_editor::Content::with_text(include_str!("main.rs")),
-        }
+    fn boot() -> (Self, Task<Message>) {
+        (
+            Self {
+                content: text_editor::Content::with_text(include_str!("main.rs")),
+            },
+            Task::perform(
+                load_file(format!("{}/src/main.rs", env!("CARGO_MANIFEST_DIR"))),
+                Message::FileOpened,
+            ),
+        )
     }
 
     fn title(&self) -> String {
@@ -35,6 +45,11 @@ impl Editor {
         match message {
             Message::Edit(action) => {
                 self.content.perform(action);
+            }
+            Message::FileOpened(result) => {
+                if let Ok(content) = result {
+                    self.content = text_editor::Content::with_text(&content);
+                }
             }
         }
     }
@@ -64,4 +79,11 @@ impl Editor {
     fn theme(&self) -> Theme {
         Theme::Dark
     }
+}
+
+async fn load_file(path: impl AsRef<Path>) -> Result<Arc<String>, io::ErrorKind> {
+    tokio::fs::read_to_string(path)
+        .await
+        .map(Arc::new)
+        .map_err(|error| error.kind())
 }
