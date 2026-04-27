@@ -47,6 +47,7 @@ impl Editor {
     fn update(&mut self, message: Message) -> Task<Message> {
         match message {
             Message::Edit(action) => {
+                self.error = None;
                 self.content.perform(action);
                 Task::none()
             }
@@ -81,9 +82,13 @@ impl Editor {
             .min_height(450);
 
         let status_bar = {
-            let file_path = match self.path.as_deref().and_then(Path::to_str) {
-                Some(path) => text(path).size(14),
-                None => text("New file"),
+            let status = if let Some(Error::IO(error)) = self.error.as_ref() {
+                text(error.to_string())
+            } else {
+                match self.path.as_deref().and_then(Path::to_str) {
+                    Some(path) => text(path).size(14),
+                    None => text("New file"),
+                }
             };
 
             let cursor = self.content.cursor();
@@ -95,7 +100,7 @@ impl Editor {
                 text(format!("{}:{}", cursor_line + 1, cursor_column + 1))
             };
 
-            row![file_path, space().width(Length::Fill), position]
+            row![status, space().width(Length::Fill), position]
         };
 
         container(column![controls, input, status_bar].spacing(10))
